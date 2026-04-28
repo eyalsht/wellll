@@ -1,8 +1,66 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#ff9f0a"/>
-  <circle cx="256" cy="248" r="140" fill="none" stroke="white" stroke-width="18"/>
-  <line x1="256" y1="248" x2="256" y2="150" stroke="white" stroke-width="18" stroke-linecap="round"/>
-  <line x1="256" y1="248" x2="316" y2="290" stroke="white" stroke-width="18" stroke-linecap="round"/>
-  <circle cx="256" cy="248" r="10" fill="white"/>
-  <path d="M220 90 L256 60 L292 90" fill="none" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFAB20"/>
+      <stop offset="100%" stop-color="#E8580A"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.22)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <!-- Top shine -->
+  <rect width="512" height="280" rx="112" fill="url(#shine)"/>
+
+  <!-- Outer ring -->
+  <circle cx="256" cy="252" r="158" fill="rgba(0,0,0,0.12)" filter="url(#soft-shadow)"/>
+  <circle cx="256" cy="252" r="158" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/>
+
+  <!-- Inner face -->
+  <circle cx="256" cy="252" r="142" fill="rgba(255,255,255,0.10)"/>
+
+  <!-- Tick marks — 12 positions -->
+  <g stroke="rgba(255,255,255,0.5)" stroke-linecap="round">
+    <!-- Major ticks at 12, 3, 6, 9 -->
+    <line x1="256" y1="112" x2="256" y2="134" stroke-width="9"/>
+    <line x1="396" y1="252" x2="374" y2="252" stroke-width="9"/>
+    <line x1="256" y1="392" x2="256" y2="370" stroke-width="9"/>
+    <line x1="116" y1="252" x2="138" y2="252" stroke-width="9"/>
+    <!-- Minor ticks -->
+    <line x1="329" y1="121" x2="320" y2="137" stroke-width="5"/>
+    <line x1="387" y1="179" x2="371" y2="188" stroke-width="5"/>
+    <line x1="387" y1="325" x2="371" y2="316" stroke-width="5"/>
+    <line x1="329" y1="383" x2="320" y2="367" stroke-width="5"/>
+    <line x1="183" y1="383" x2="192" y2="367" stroke-width="5"/>
+    <line x1="125" y1="325" x2="141" y2="316" stroke-width="5"/>
+    <line x1="125" y1="179" x2="141" y2="188" stroke-width="5"/>
+    <line x1="183" y1="121" x2="192" y2="137" stroke-width="5"/>
+  </g>
+
+  <!-- Hour hand pointing to ~10 -->
+  <line x1="256" y1="252" x2="194" y2="162"
+        stroke="white" stroke-width="22" stroke-linecap="round"
+        filter="url(#soft-shadow)"/>
+
+  <!-- Minute hand pointing to ~12 -->
+  <line x1="256" y1="252" x2="256" y2="130"
+        stroke="white" stroke-width="16" stroke-linecap="round"
+        filter="url(#soft-shadow)"/>
+
+  <!-- Center cap -->
+  <circle cx="256" cy="252" r="16" fill="white"/>
+  <circle cx="256" cy="252" r="8" fill="#FF8C00"/>
+
+  <!-- Flame accent bottom-right (fasting symbol) -->
+  <path d="M342 338 C342 338 320 318 328 298 C334 284 348 280 348 280
+           C348 280 340 296 352 306 C360 314 370 308 370 308
+           C370 308 372 330 354 342 C346 347 342 338 342 338Z"
+        fill="rgba(255,255,255,0.85)"/>
 </svg>
