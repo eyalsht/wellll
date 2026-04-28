@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#ff9f0a" />
+
+  <!-- PWA / iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="FastTrack" />
+  <link rel="apple-touch-icon" href="icons/icon-512.png" />
+  <link rel="manifest" href="manifest.json" />
+
+  <title>FastTrack</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-state="idle">
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="header">
+    <span class="header-title">FastTrack</span>
+    <div class="header-actions">
+      <button id="dark-toggle" class="icon-btn" aria-label="Toggle dark mode">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button id="settings-btn" class="icon-btn" aria-label="Settings">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT ──────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Timer ring -->
+    <div class="ring-wrapper">
+      <svg class="ring-svg" viewBox="0 0 240 240" aria-hidden="true">
+        <defs>
+          <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff9f0a"/>
+            <stop offset="100%" stop-color="#ff6b00"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <circle class="ring-bg" cx="120" cy="120" r="108" />
+        <circle id="ring-fill" class="ring-fill" cx="120" cy="120" r="108"
+                stroke-dasharray="678.6" stroke-dashoffset="678.6"
+                transform="rotate(-90 120 120)" filter="url(#glow)" />
+      </svg>
+      <div class="ring-content">
+        <div id="timer-display" class="timer-display">00:00:00</div>
+        <div id="goal-label" class="goal-label">Tap to start fasting</div>
+        <button id="edit-live-btn" class="edit-live-btn" aria-label="Edit start time">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit start
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div id="progress-section" class="progress-section">
+      <div class="progress-meta">
+        <span id="progress-label" class="progress-label">Goal progress</span>
+        <span id="time-remaining" class="time-remaining"></span>
+      </div>
+      <div class="progress-bar-track">
+        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- Start / Stop button -->
+    <button id="start-stop-btn" class="start-stop-btn" aria-label="Start fast">
+      <span id="btn-label">Start Fast</span>
+    </button>
+
+    <!-- Water strip -->
+    <div id="water-strip" class="water-strip">
+      <div class="water-info">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="water-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="none"/><path d="M12 2a10 10 0 0 0 0 20A10 10 0 0 0 12 2zm0 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 16c-2.67 0-8-1.34-8-4v-2c0-2.66 5.33-4 8-4s8 1.34 8 4v2c0 2.66-5.33 4-8 4z" fill="none"/><path d="M12 3.5C9.5 3.5 7 5.5 7 9c0 3.75 4.5 9.5 5 10 .5-.5 5-6.25 5-10 0-3.5-2.5-5.5-5-5.5zm0 7.5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+        <span id="water-count">0</span>
+        <span class="water-unit">glasses</span>
+      </div>
+      <button id="water-btn" class="water-add-btn" aria-label="Add glass of water">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+
+    <!-- History section -->
+    <section class="history-section">
+      <div class="history-header">
+        <h2 class="history-title">History</h2>
+        <button id="clear-history-btn" class="text-btn">Clear all</button>
+      </div>
+      <div id="history-list" class="history-list">
+        <div class="history-empty">No fasts recorded yet</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── SNACKBAR ──────────────────────────────────────── -->
+  <div id="snackbar" class="snackbar" role="status" aria-live="polite">
+    <span id="snackbar-text">Fast ended</span>
+    <button id="snackbar-undo" class="snackbar-undo">Undo</button>
+  </div>
+
+  <!-- ── EDIT MODAL ─────────────────────────────────────── -->
+  <div id="edit-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" hidden>
+    <div class="modal-sheet" id="edit-sheet">
+      <div class="modal-handle"></div>
+      <h2 id="edit-modal-title" class="modal-title">Edit Fast</h2>
+      <div class="form-group">
+        <label class="form-label" for="edit-start">Start time</label>
+        <input type="datetime-local" id="edit-start" class="form-input" />
+      </div>
+      <div class="form-group" id="edit-end-group">
+        <label class="form-label" for="edit-end">End time</label>
+        <input type="datetime-local" id="edit-end" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="edit-goal">Goal (hours)</label>
+        <input type="number" id="edit-goal" class="form-input" min="1" max="72" placeholder="e.g. 16" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="edit-water">Water (glasses)</label>
+        <input type="number" id="edit-water" class="form-input" min="0" max="50" placeholder="0" />
+      </div>
+      <div class="modal-actions">
+        <button id="edit-cancel" class="modal-btn modal-btn--secondary">Cancel</button>
+        <button id="edit-save" class="modal-btn modal-btn--primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SETTINGS MODAL ─────────────────────────────────── -->
+  <div id="settings-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+    <div class="modal-sheet" id="settings-sheet">
+      <div class="modal-handle"></div>
+      <h2 id="settings-title" class="modal-title">Settings</h2>
+      <div class="form-group">
+        <label class="form-label" for="settings-goal">Default goal (hours)</label>
+        <input type="number" id="settings-goal" class="form-input" min="1" max="72" placeholder="16" />
+      </div>
+      <div class="form-group form-group--row">
+        <label class="form-label" for="settings-dark">Dark mode</label>
+        <label class="toggle-switch" aria-label="Dark mode">
+          <input type="checkbox" id="settings-dark" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button id="settings-close" class="modal-btn modal-btn--primary">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
