@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'fasttrack-v1';
+const CACHE_NAME = 'fasttrack-v2';
 const ASSETS = [
   './',
   './index.html',

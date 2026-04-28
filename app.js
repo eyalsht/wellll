@@ -96,7 +96,7 @@ function transition(newStatus) {
 /* ── C: Timer engine ──────────────────────────────────── */
 
 let _tickId = null;
-const RING_CIRCUMFERENCE = 2 * Math.PI * 108; // r=108
+const RING_CIRCUMFERENCE = 2 * Math.PI * 108;
 
 function startTick() {
   if (_tickId) clearInterval(_tickId);
@@ -165,6 +165,95 @@ function updateProgress(elapsed) {
   }
 }
 
+/* ── N: Notifications ─────────────────────────────────── */
+
+let _notifTimeouts = [];
+
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  const result = await Notification.requestPermission();
+  return result === 'granted';
+}
+
+function showNotif(title, body, tag) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const opts = { body, icon: './icons/icon-512.png', badge: './icons/icon-192.png', tag };
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts));
+  } else {
+    new Notification(title, opts);
+  }
+}
+
+function clearScheduledNotifications() {
+  _notifTimeouts.forEach(id => clearTimeout(id));
+  _notifTimeouts = [];
+}
+
+function scheduleNotifications(startTimeISO, goalHours) {
+  clearScheduledNotifications();
+  if (!goalHours) return;
+
+  const startMs = new Date(startTimeISO).getTime();
+  const goalMs  = goalHours * 3600 * 1000;
+  const now     = Date.now();
+
+  const schedule = (fireAt, title, body, tag) => {
+    const delay = fireAt - now;
+    if (delay <= 0) return;
+    _notifTimeouts.push(setTimeout(() => showNotif(title, body, tag), delay));
+  };
+
+  // 1 hour after start
+  schedule(
+    startMs + 3600000,
+    'Fast started',
+    `1 hour in — keep it up! ${goalHours}h goal ahead.`,
+    'ft-1h-start'
+  );
+
+  // Halfway through
+  schedule(
+    startMs + goalMs / 2,
+    'Halfway there!',
+    `You're halfway through your ${goalHours}h fast. Stay strong!`,
+    'ft-halfway'
+  );
+
+  // 1 hour before goal
+  schedule(
+    startMs + goalMs - 3600000,
+    'Almost done!',
+    `Only 1 hour left in your ${goalHours}h fast!`,
+    'ft-1h-end'
+  );
+
+  // Goal reached
+  schedule(
+    startMs + goalMs,
+    'Fast complete!',
+    `You've completed your ${goalHours}h fast! Time to break the fast.`,
+    'ft-goal'
+  );
+
+  // 12:00 PM notification — next noon that falls inside the fast window
+  const fastEndMs = startMs + goalMs;
+  const noon = new Date(now);
+  noon.setHours(12, 0, 0, 0);
+  if (noon.getTime() <= now) noon.setDate(noon.getDate() + 1);
+  if (noon.getTime() < fastEndMs) {
+    const remaining = fastEndMs - noon.getTime();
+    schedule(
+      noon.getTime(),
+      'Midday check-in',
+      `${formatDuration(remaining)} left in your fast. Keep going!`,
+      'ft-noon'
+    );
+  }
+}
+
 /* ── D: Fast controls ─────────────────────────────────── */
 
 let _undoTimeout = null;
@@ -183,6 +272,10 @@ function handleStartFast() {
   saveState(_appState);
   transition('fasting');
   startTick();
+
+  requestNotificationPermission().then(granted => {
+    if (granted) scheduleNotifications(_appState.startTime, _appState.goalHours);
+  });
 }
 
 function handleEndFast() {
@@ -193,6 +286,7 @@ function handleEndFast() {
 }
 
 function commitEndFast() {
+  clearScheduledNotifications();
   if (!_pendingEndState) { transition('idle'); return; }
 
   const endTime = new Date().toISOString();
@@ -230,6 +324,9 @@ function undoEndFast() {
   saveState(_appState);
   transition('fasting');
   startTick();
+  requestNotificationPermission().then(granted => {
+    if (granted) scheduleNotifications(_appState.startTime, _appState.goalHours);
+  });
 }
 
 /* ── E: Water tracking ────────────────────────────────── */
@@ -519,6 +616,9 @@ function initApp() {
 
   if (_appState.status === 'fasting') {
     startTick();
+    requestNotificationPermission().then(granted => {
+      if (granted) scheduleNotifications(_appState.startTime, _appState.goalHours);
+    });
   }
 
   bindEvents();
